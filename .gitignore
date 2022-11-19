@@ -45,3 +45,5 @@ app.*.map.json
 
 python/dist/
 python/build/
+
+setup/Output
