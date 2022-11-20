@@ -40,6 +40,7 @@ class TransformClientBloc
   ClientConnectionClient connection;
   late int notificationID;
   int currentIndex = 0;
+  bool connected = true;
   TransformClientBloc(this.connection) : super(TransformClientState()) {
     connection.bloc = this;
     notificationID = Random().nextInt(1000000);
@@ -69,7 +70,7 @@ class TransformClientBloc
                 '${state.files[currentIndex].path} | ${state.speedInSecond}',
                 state.files[currentIndex].progress.toInt());
             await Future.delayed(const Duration(seconds: 1));
-          } while (state.sending);
+          } while (state.sending && connected);
           NotificationsManager.closeAll();
         }
       }
@@ -95,8 +96,8 @@ class TransformClientBloc
           sending: sending,
           speed: speed.toInt()));
     });
-    on<ServerDisconnected>(
-        (event, emit) => emit(state.copyWith(connected: false)));
+    on<ServerDisconnected>((event, emit) =>
+        emit(state.copyWith(connected: false, sending: false)));
   }
 
   List<Map<String, dynamic>> _compareFiles(String rootPath, Map dirData) {
@@ -192,6 +193,7 @@ class TransformClientBloc
 
   @override
   Future<void> close() async {
+    connected = false;
     NotificationsManager.closeAll();
     if (state.connected) {
       await connection.close();

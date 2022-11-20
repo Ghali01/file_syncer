@@ -34,19 +34,26 @@ class App extends StatelessWidget {
       onGenerateRoute: Routes.generate,
       theme: ThemeData(
         primaryColor: Colors.amber.shade200,
+        splashColor: Colors.amber.shade200.withOpacity(.35),
+        colorScheme: ColorScheme.light(
+            secondary: Colors.amber.shade200.withOpacity(.35)),
         appBarTheme: AppBarTheme(
             backgroundColor: Colors.amber.shade200,
             foregroundColor: AppColors.hunterGreen),
-        elevatedButtonTheme: const ElevatedButtonThemeData(
+        elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(
-            backgroundColor: MaterialStatePropertyAll(AppColors.keppel),
-            foregroundColor: MaterialStatePropertyAll(AppColors.areoBlue),
-            alignment: Alignment.center,
-          ),
+              backgroundColor: const MaterialStatePropertyAll(AppColors.keppel),
+              foregroundColor:
+                  const MaterialStatePropertyAll(AppColors.areoBlue),
+              alignment: Alignment.center,
+              overlayColor: MaterialStatePropertyAll(
+                  Colors.amber.shade200.withOpacity(.35))),
         ),
         textButtonTheme: TextButtonThemeData(
           style: ButtonStyle(
-            foregroundColor: MaterialStatePropertyAll(AppColors.keppel),
+            overlayColor: MaterialStatePropertyAll(
+                Colors.amber.shade200.withOpacity(.35)),
+            foregroundColor: const MaterialStatePropertyAll(AppColors.keppel),
           ),
         ),
         progressIndicatorTheme:

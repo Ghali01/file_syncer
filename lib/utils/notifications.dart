@@ -22,6 +22,7 @@ class NotificationsManager {
               channelDescription: "this channel to display the progress",
               maxProgress: 100,
               showProgress: true,
+              importance: Importance.low,
               progress: progress),
         ),
       );

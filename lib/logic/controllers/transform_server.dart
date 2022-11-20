@@ -86,8 +86,8 @@ class TransformServerBloc
           sending: sending,
           speed: speed.toInt()));
     });
-    on<ClientDisconnected>(
-        (event, emit) => emit(state.copyWith(connected: false)));
+    on<ClientDisconnected>((event, emit) =>
+        emit(state.copyWith(connected: false, sending: false)));
   }
   int _calcLength(List files) {
     num sum = 0;
@@ -121,6 +121,7 @@ class TransformServerBloc
   }
 
   void _runFtpServer(String path) async {
+    await ftpServer?.stop();
     NetworkInfo info = NetworkInfo();
     String host = (await info.getWifiIP())!;
     ftpServer = FTPServer(host, 21401, path, 'user', '1234');
