@@ -130,6 +130,7 @@ class TransformServerBloc
   @override
   Future<void> close() async {
     await ftpServer?.stop();
+    NotificationsManager.closeAll();
     if (state.connected) {
       await connection.close();
     }

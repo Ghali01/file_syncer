@@ -50,7 +50,9 @@ class TransformServerPage extends StatelessWidget {
           body: BlocListener<TransformServerBloc, TransformServerState>(
             listenWhen: (previous, current) => current.connected == false,
             listener: (context, state) {
-              Navigator.of(context).pop();
+              if (Navigator.of(context).canPop()) {
+                Navigator.of(context).pop();
+              }
               showInAppNotification(context, "Connection Lost");
             },
             child: Padding(
@@ -187,8 +189,10 @@ class TransformServerPage extends StatelessWidget {
                       builder: (context, state) {
                         return ListView.builder(
                           itemCount: state.length,
-                          itemBuilder: (context, index) =>
-                              FileItem(data: state[index]),
+                          itemBuilder: (context, index) => Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: FileItem(data: state[index]),
+                          ),
                         );
                       },
                     ),

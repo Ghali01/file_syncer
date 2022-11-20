@@ -38,6 +38,7 @@ Source: "E:\projects\files_syncer\build\windows\runner\Release\{#MyAppExeName}";
 Source: "E:\projects\files_syncer\build\windows\runner\Release\bitsdojo_window_windows_plugin.lib"; DestDir: "{app}"; Flags: ignoreversion
 Source: "E:\projects\files_syncer\build\windows\runner\Release\files_syncer.exp"; DestDir: "{app}"; Flags: ignoreversion
 Source: "E:\projects\files_syncer\build\windows\runner\Release\files_syncer.lib"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\projects\files_syncer\build\windows\runner\Release\ftp.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "E:\projects\files_syncer\build\windows\runner\Release\flutter_windows.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "E:\projects\files_syncer\build\windows\runner\Release\network_info_plus_plugin.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "E:\projects\files_syncer\build\windows\runner\Release\permission_handler_windows_plugin.dll"; DestDir: "{app}"; Flags: ignoreversion

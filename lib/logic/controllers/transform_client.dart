@@ -192,6 +192,7 @@ class TransformClientBloc
 
   @override
   Future<void> close() async {
+    NotificationsManager.closeAll();
     if (state.connected) {
       await connection.close();
     }
