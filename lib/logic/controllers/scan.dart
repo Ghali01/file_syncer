@@ -13,7 +13,7 @@ class ScanCubit extends Cubit<ScanState> {
   }
   Future<void> scan() async {
     emit(state.copyWith(scanning: true));
-
+    // get the privet ip
     String ip;
     if (Platform.isAndroid) {
       List<NetworkInterface> ips = await NetworkInterface.list();
@@ -22,18 +22,21 @@ class ScanCubit extends Cubit<ScanState> {
       NetworkInfo info = NetworkInfo();
       ip = (await info.getWifiIP())!;
     }
+    // get the subnet from the ip
     List l = ip.split('.')..removeLast();
-    print(ip);
+    // print(ip);
     String subnet = l.join('.');
     List<ClientConnectionClient> devices = [];
     var stream = NetworkAnalyzer.discover2(subnet, AppServer.port,
         timeout: const Duration(seconds: 7));
     try {
+      // scan through the network
       await for (var address in stream) {
         if (address.exists) {
           print(address.ip);
           ClientConnectionClient connection =
               ClientConnectionClient(address: address.ip);
+          // connect to the host (create channel)
           await connection.connect();
           devices.add(connection);
         }
@@ -43,9 +46,11 @@ class ScanCubit extends Cubit<ScanState> {
     emit(state.copyWith(scanning: false, devices: devices));
   }
 
+  // when user select a device
   void connect(int index) async {
     emit(
         state.copyWith(connecting: true, connectTo: state.devices[index].name));
+    // send handshake because channel already have created
     bool connected = await state.devices[index].sendHandshakeRequest();
 
     emit(state.copyWith(

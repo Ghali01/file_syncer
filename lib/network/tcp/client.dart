@@ -13,16 +13,18 @@ class ClientConnectionClient {
   late Stream<Uint8List> output;
   late String name;
   String address;
-  TransformClientBloc? bloc;
+  disconnect? bloc;
   StreamSubscription? _subscription;
   ClientConnectionClient({
     required this.address,
   });
 
   Future<void> connect() async {
+    // start the socket connection
     _socket = await Socket.connect(address, AppServer.port);
     output = _socket.asBroadcastStream();
     _socket.add([OPCodes.Identification]);
+    // get the host name
     await for (Uint8List msg in output) {
       if (msg.isNotEmpty && msg.first == OPCodes.Identification) {
         List<int> data = msg.toList()..removeAt(0);
@@ -34,7 +36,9 @@ class ClientConnectionClient {
 
   Future<bool> sendHandshakeRequest() async {
     String name = await getDeviceName();
+    //send the handshake  op code and the device name
     _socket.add([OPCodes.HandShake, ...utf8.encode(name)]);
+    //wait the response
     await for (Uint8List msg in output) {
       if (msg.isNotEmpty) {
         if (msg.first == OPCodes.HandShake) {
@@ -69,9 +73,10 @@ class ClientConnectionClient {
     List<int> buffer = [];
     bool connected = true;
     _subscription = output.listen((event) {
+//add the bytes to the buffer
       buffer.addAll(event);
-      print(buffer);
     }, onDone: () {
+      // socket disconnected
       bloc?.add(ServerDisconnected());
       connected = false;
     });

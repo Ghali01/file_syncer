@@ -5,6 +5,7 @@ import 'package:files_syncer/network/tcp/server.dart';
 
 abstract class _BaseHostEvent {}
 
+// when user close the host
 class CloseHostEvent extends _BaseHostEvent {}
 
 abstract class _ConnectionToHostEvent extends _BaseHostEvent {
@@ -14,14 +15,17 @@ abstract class _ConnectionToHostEvent extends _BaseHostEvent {
   });
 }
 
+// new connection comes
 class NewConnectionEvent extends _ConnectionToHostEvent {
   NewConnectionEvent({required super.connection});
 }
 
+// when the user accept  the connection
 class AcceptConnectionEvent extends _ConnectionToHostEvent {
   AcceptConnectionEvent({required super.connection});
 }
 
+// when the user reject  the connection
 class RejectConnectionEvent extends _ConnectionToHostEvent {
   RejectConnectionEvent({required super.connection});
 }
@@ -46,9 +50,11 @@ class HostBloc extends Bloc<_BaseHostEvent, HostState> {
       event.connection.sendRejectHandshake();
     });
   }
+
+  // on close the page
   @override
-  Future<void> close() {
-    server.close();
-    return super.close();
+  Future<void> close() async {
+    await server.close(); //close host
+    return await super.close();
   }
 }

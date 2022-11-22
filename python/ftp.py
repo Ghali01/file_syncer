@@ -39,14 +39,14 @@ def startFtpServer(host,port,directory,user,password):
     # set a limit for connections
     server.max_cons = 256
     server.max_cons_per_ip = 5
-
+    print('start')
     # start ftp server
     server.serve_forever()
 def stopFtpServer():
     if server:
+        print('stop')
         server.close_all()
 def handler(call,reply):
-    print(call.method)
     if call.method=='start':
         threading.Thread(target=startFtpServer,kwargs=call.args).start()
     elif call.method=='stop':

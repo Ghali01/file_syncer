@@ -14,10 +14,13 @@ import 'package:files_syncer/network/tcp/server.dart';
 
 abstract class _BaseTransformServerEvent {}
 
+// when user try to select directory
 class SelectDirectoryClicked extends _BaseTransformServerEvent {}
 
+// when receiver disconnected
 class ClientDisconnected extends _BaseTransformServerEvent {}
 
+// when receiver send the directory tree
 class TransformData extends _BaseTransformServerEvent {
   List files;
   TransformData({
@@ -25,6 +28,7 @@ class TransformData extends _BaseTransformServerEvent {
   });
 }
 
+// when file progress is sent by the receiver
 class ProgressChange extends _BaseTransformServerEvent {
   Map data;
   ProgressChange({
@@ -36,16 +40,24 @@ class TransformServerBloc
     extends Bloc<_BaseTransformServerEvent, TransformServerState> {
   ClientConnectionServer connection;
   FTPServer? ftpServer;
-  late int notificationID;
-  int currentIndex = 0;
+  late int
+      notificationID; // the id is used  to display the progress notification
+  int currentIndex =
+      0; // the index of the file that currently is being received
+  bool connected =
+      true; // this bool will assigned to false on disconnect to remove the notification
+
   TransformServerBloc(this.connection) : super(TransformServerState()) {
     notificationID = Random().nextInt(1000000);
     connection.bloc = this;
     on<SelectDirectoryClicked>((event, emit) async {
       String? path = await FilePicker.platform.getDirectoryPath();
       if (path != null) {
+        // run the ftp server on the path
         _runFtpServer(path);
+        // get the dir tree
         Map data = _dirToMap(path, Directory(path));
+        // send the dir tree to the receiver
         connection.sendDirectoryData(data);
         emit(state.copyWith(path: path));
       }
@@ -59,25 +71,34 @@ class TransformServerBloc
             totalReceived: 0),
       );
       do {
-        emit(state.copyWith(speedPerSecond: state.speed, speed: 0));
+        // Watered the speed in every second in state.speed
+        // every second the value of this variable will moved to speedPerSecond
+        // and the speed variable will assign to 0emit(state.copyWith(speedPerSecond: state.speed, speed: 0));
         NotificationsManager.show(
             notificationID,
             'Connected to ${connection.name}',
             '${state.files[currentIndex].path} | ${state.speedInSecond}',
             state.files[currentIndex].progress.toInt());
         await Future.delayed(const Duration(seconds: 1));
-      } while (state.sending);
+      } while (state.sending && connected);
       NotificationsManager.closeAll();
     });
 
     on<ProgressChange>((event, emit) {
+      // change the state
+
       List files = state.files.toList();
       files[event.data['index']!] = FileModel.fromMap(event.data);
       currentIndex = event.data['index']!;
+      // calculate the the total size of received files
       num totalReceived = 0;
       for (var item in files) {
         totalReceived += item.totalReceived;
       }
+
+      // Watered the speed in every second in state.speed
+      // every second the value of this variable will moved to speedPerSecond
+      // and the speed variable will assign to 0
       num speed = (state.speed ?? 0) + totalReceived - state.totalReceived;
       bool sending = totalReceived == state.totalLength! ? false : true;
       emit(state.copyWith(
@@ -130,6 +151,7 @@ class TransformServerBloc
 
   @override
   Future<void> close() async {
+    connected = false;
     await ftpServer?.stop();
     NotificationsManager.closeAll();
     if (state.connected) {

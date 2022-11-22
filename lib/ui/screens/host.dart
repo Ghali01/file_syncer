@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HostPage extends StatelessWidget {
-  HostPage({super.key});
+  const HostPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +30,7 @@ class HostPage extends StatelessWidget {
         body: BlocListener<HostBloc, HostState>(
           listener: (context, state) async {
             if (state.connection != null && !state.connected) {
+              // a device try to connect
               ClientConnectionServer connection = state.connection!;
               bool? accept = await showDialog(
                   context: context,
@@ -38,16 +39,19 @@ class HostPage extends StatelessWidget {
                       text:
                           '${connection.name} try to connect to your device.'));
               if (accept == true) {
+                // handshake was accepted
                 context
                     .read<HostBloc>()
                     .add(AcceptConnectionEvent(connection: connection));
               } else {
+                // handshake was rejected or dialog was canceled
                 context
                     .read<HostBloc>()
                     .add(RejectConnectionEvent(connection: connection));
               }
             }
             if (state.connected) {
+              // device connected
               Navigator.of(context).pushReplacementNamed(Routes.transformServer,
                   arguments:
                       TransformServerPageArgs(connection: state.connection!));
@@ -56,17 +60,15 @@ class HostPage extends StatelessWidget {
           child: Center(child: BlocBuilder<HostBloc, HostState>(
             builder: (context, state) {
               return Column(
-                children: [
+                children: const [
                   Text(
-                    state.connected
-                        ? "connected ${state.connection!.name}"
-                        : "Waiting connection",
-                    style: const TextStyle(fontSize: 28),
+                    "Waiting connection",
+                    style: TextStyle(fontSize: 28),
                   ),
-                  const SizedBox(
+                  SizedBox(
                     height: 8,
                   ),
-                  const CircularProgressIndicator(),
+                  CircularProgressIndicator(),
                 ],
               );
             },

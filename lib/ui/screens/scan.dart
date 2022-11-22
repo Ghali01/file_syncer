@@ -31,10 +31,12 @@ class ScanPage extends StatelessWidget {
               previous.connecting == true && current.connecting == false,
           listener: (context, state) {
             if (state.connected) {
+              // device connected
               Navigator.of(context).pushReplacementNamed(Routes.transformClient,
                   arguments:
                       TransformClientPageArgs(connection: state.connection!));
             } else {
+              // Connection Rejected
               showInAppNotification(context, 'Connection Rejected');
             }
           },
@@ -79,7 +81,7 @@ class ScanPage extends StatelessWidget {
                   ),
                 );
               }
-
+              // display devices
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [

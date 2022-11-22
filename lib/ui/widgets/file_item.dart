@@ -11,7 +11,7 @@ class FileItem extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(12),
       child: SizedBox(
-        height: 80,
+        height: 100,
         child: Stack(
           children: [
             LayoutBuilder(

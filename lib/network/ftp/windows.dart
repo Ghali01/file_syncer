@@ -3,6 +3,7 @@ import 'package:python_channel/python_channel.dart';
 import 'base.dart';
 
 class WindowsFTPHandler extends FTPHandler {
+  // the id of the server
   static int _count = 0;
   late String _id;
   MethodChannel channel = MethodChannel(name: 'ftp');
@@ -12,10 +13,14 @@ class WindowsFTPHandler extends FTPHandler {
       required super.directory,
       required super.user,
       required super.password}) {
+    // set unique id
     _count++;
     _id = 'ftpH$_count';
+
+// bind python host for each server
     PythonChannelPlugin.bindHost(
         name: _id,
+        // debugExePath: 'E:\\projects\\files_syncer\\python\\dist\\ftp.exe',
         debugPyPath: 'E:\\projects\\files_syncer\\python\\ftp.py',
         releasePath: 'ftp.exe');
     PythonChannelPlugin.bindChannel(_id, channel);

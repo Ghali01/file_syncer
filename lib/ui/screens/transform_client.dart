@@ -27,7 +27,7 @@ class TransformClientPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       lazy: false,
-      create: (context) => TransformClientBloc(args.connection),
+      create: (context) => disconnect(args.connection),
       child: WillPopScope(
         onWillPop: () async =>
             (await showDialog(
@@ -47,7 +47,7 @@ class TransformClientPage extends StatelessWidget {
               : AppBar(
                   title: Text('connected to ${args.connection.name}'),
                 ),
-          body: BlocListener<TransformClientBloc, TransformClientState>(
+          body: BlocListener<disconnect, TransformClientState>(
             listenWhen: (previous, current) => current.connected == false,
             listener: (context, state) {
               if (Navigator.of(context).canPop()) {
@@ -69,8 +69,7 @@ class TransformClientPage extends StatelessWidget {
                   const SizedBox(
                     height: 8,
                   ),
-                  BlocSelector<TransformClientBloc, TransformClientState,
-                      String?>(
+                  BlocSelector<disconnect, TransformClientState, String?>(
                     selector: (state) {
                       return state.path;
                     },
@@ -87,8 +86,8 @@ class TransformClientPage extends StatelessWidget {
                       height: 42,
                       child: Stack(
                         children: [
-                          BlocSelector<TransformClientBloc,
-                              TransformClientState, double>(
+                          BlocSelector<disconnect, TransformClientState,
+                              double>(
                             selector: (state) {
                               return state.progressValue;
                             },
@@ -115,7 +114,7 @@ class TransformClientPage extends StatelessWidget {
                                       const SizedBox(
                                         width: 8,
                                       ),
-                                      BlocSelector<TransformClientBloc,
+                                      BlocSelector<disconnect,
                                           TransformClientState, String>(
                                         selector: (state) {
                                           return state.progress;
@@ -131,7 +130,7 @@ class TransformClientPage extends StatelessWidget {
                                       const SizedBox(
                                         width: 8,
                                       ),
-                                      BlocSelector<TransformClientBloc,
+                                      BlocSelector<disconnect,
                                           TransformClientState, String>(
                                         selector: (state) {
                                           return state.speedInSecond;
@@ -147,8 +146,8 @@ class TransformClientPage extends StatelessWidget {
                                     ],
                                   ),
                                 ),
-                                BlocSelector<TransformClientBloc,
-                                    TransformClientState, String>(
+                                BlocSelector<disconnect, TransformClientState,
+                                    String>(
                                   selector: (state) {
                                     return state.totalSize;
                                   },
@@ -173,8 +172,7 @@ class TransformClientPage extends StatelessWidget {
                     height: 16,
                   ),
                   Expanded(
-                    child: BlocSelector<TransformClientBloc,
-                        TransformClientState, List>(
+                    child: BlocSelector<disconnect, TransformClientState, List>(
                       selector: (state) => state.files,
                       builder: (context, state) {
                         return ListView.builder(

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:files_syncer/network/ftp/server.dart';
 import 'package:files_syncer/ui/widgets/title_bar.dart';
 import 'package:files_syncer/utils/in_app_notifcation.dart';
 import 'package:files_syncer/utils/notifications.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class HomePage extends StatelessWidget {
+  FTPServer? ftpServer;
   HomePage({super.key}) {
     _checkPerm().then((value) => null);
   }
@@ -98,6 +100,18 @@ class HomePage extends StatelessWidget {
                   size: 60,
                 ),
               ),
+              // ElevatedButton(
+              //     onPressed: () async {
+              //       if (ftpServer == null) {
+              //         ftpServer = FTPServer(
+              //             '192.168.1.5', 40521, 'F:\\test', 'user', '1234');
+              //         await ftpServer?.start();
+              //       } else {
+              //         await ftpServer?.stop();
+              //         ftpServer = null;
+              //       }
+              //     },
+              //     child: const Text('test')),
             ],
           ),
         ),

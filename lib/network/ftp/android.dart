@@ -2,7 +2,9 @@ import 'package:files_syncer/network/ftp/base.dart';
 import 'package:flutter/services.dart';
 
 class AndroidFTPHandler extends FTPHandler {
+  // the kotlin channel
   MethodChannel channel = const MethodChannel('ftp');
+  // the id of the server
   static int _count = 0;
   late String id;
   AndroidFTPHandler(
@@ -11,6 +13,7 @@ class AndroidFTPHandler extends FTPHandler {
       required super.directory,
       required super.user,
       required super.password}) {
+    // set unique id
     _count++;
     id = 'ftp-$_count';
   }
