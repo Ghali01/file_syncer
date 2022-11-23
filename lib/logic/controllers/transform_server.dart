@@ -74,6 +74,7 @@ class TransformServerBloc
         // Watered the speed in every second in state.speed
         // every second the value of this variable will moved to speedPerSecond
         // and the speed variable will assign to 0emit(state.copyWith(speedPerSecond: state.speed, speed: 0));
+        emit(state.copyWith(speedPerSecond: state.speed, speed: 0));
         NotificationsManager.show(
             notificationID,
             'Connected to ${connection.name}',

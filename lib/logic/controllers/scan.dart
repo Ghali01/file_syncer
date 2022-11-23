@@ -27,9 +27,9 @@ class ScanCubit extends Cubit<ScanState> {
     // print(ip);
     String subnet = l.join('.');
     List<ClientConnectionClient> devices = [];
-    var stream = NetworkAnalyzer.discover2(subnet, AppServer.port,
-        timeout: const Duration(seconds: 7));
     try {
+      var stream = NetworkAnalyzer.discover2(subnet, AppServer.port,
+          timeout: const Duration(seconds: 7));
       // scan through the network
       await for (var address in stream) {
         if (address.exists) {
@@ -41,7 +41,7 @@ class ScanCubit extends Cubit<ScanState> {
           devices.add(connection);
         }
       }
-    } catch (e) {}
+    } on SocketException catch (e) {}
 
     emit(state.copyWith(scanning: false, devices: devices));
   }
