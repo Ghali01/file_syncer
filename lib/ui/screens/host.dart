@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:files_syncer/logic/controllers/host.dart';
 import 'package:files_syncer/logic/models/host.dart';
 import 'package:files_syncer/network/tcp/server.dart';
-import 'package:files_syncer/ui/screens/transform_server.dart';
+import 'package:files_syncer/ui/screens/transfare_server.dart';
 import 'package:files_syncer/ui/widgets/title_bar.dart';
 import 'package:files_syncer/ui/widgets/yes_no_dialog.dart';
 import 'package:files_syncer/utils/routes.dart';
@@ -54,7 +54,7 @@ class HostPage extends StatelessWidget {
               // device connected
               Navigator.of(context).pushReplacementNamed(Routes.transformServer,
                   arguments:
-                      TransformServerPageArgs(connection: state.connection!));
+                      TransferServerPageArgs(connection: state.connection!));
             }
           },
           child: Center(child: BlocBuilder<HostBloc, HostState>(

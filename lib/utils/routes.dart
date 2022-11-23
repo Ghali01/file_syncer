@@ -1,8 +1,8 @@
 import 'package:files_syncer/ui/screens/home.dart';
 import 'package:files_syncer/ui/screens/host.dart';
 import 'package:files_syncer/ui/screens/scan.dart';
-import 'package:files_syncer/ui/screens/transform_client.dart';
-import 'package:files_syncer/ui/screens/transform_server.dart';
+import 'package:files_syncer/ui/screens/transfare_client.dart';
+import 'package:files_syncer/ui/screens/transfare_server.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -22,17 +22,17 @@ class Routes {
       case scan:
         return MaterialPageRoute(builder: (_) => const ScanPage());
       case transformServer:
-        TransformServerPageArgs args =
-            settings.arguments as TransformServerPageArgs;
+        TransferServerPageArgs args =
+            settings.arguments as TransferServerPageArgs;
         return MaterialPageRoute(
-            builder: (_) => TransformServerPage(
+            builder: (_) => TransferServerPage(
                   args: args,
                 ));
       case transformClient:
-        TransformClientPageArgs args =
-            settings.arguments as TransformClientPageArgs;
+        TransferClientPageArgs args =
+            settings.arguments as TransferClientPageArgs;
         return MaterialPageRoute(
-            builder: (_) => TransformClientPage(
+            builder: (_) => TransferClientPage(
                   args: args,
                 ));
     }

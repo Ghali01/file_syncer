@@ -2,18 +2,52 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:files_syncer/network/ftp/server.dart';
+import 'package:files_syncer/ui/widgets/perm_dialog.dart';
 import 'package:files_syncer/ui/widgets/title_bar.dart';
 import 'package:files_syncer/utils/in_app_notifcation.dart';
 import 'package:files_syncer/utils/notifications.dart';
 import 'package:files_syncer/utils/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:optimization_battery/optimization_battery.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   FTPServer? ftpServer;
-  HomePage({super.key}) {
-    _checkPerm().then((value) => null);
+
+  @override
+  void initState() {
+    super.initState();
+    _disableBatteryOpt().then((value) => _checkPerm().then((value) => null));
+  }
+
+  Future<void> _disableBatteryOpt() async {
+    if (!Platform.isAndroid) {
+      return;
+    } else {
+      bool optOff = await OptimizationBattery.isIgnoringBatteryOptimizations();
+      if (optOff) {
+        return;
+      } else {
+        bool? ok = await showDialog(
+            context: context,
+            builder: (_) => const PermissionDialog(
+                title: 'Disable Battery Optimization ',
+                text:
+                    'You have to disable battery optimization in order to allow the app to transfer files in background'));
+        if (ok == true) {
+          await OptimizationBattery.openBatteryOptimizationSettings();
+        }
+        return;
+      }
+    }
   }
 
   Future<void> _checkPerm() async {
@@ -51,7 +85,14 @@ class HomePage extends StatelessWidget {
 
     var status = await Permission.manageExternalStorage.isGranted;
     if (!status) {
-      await Permission.manageExternalStorage.request();
+      bool? ok = await showDialog(
+          context: context,
+          builder: (_) => const PermissionDialog(
+              title: 'Manage All Files',
+              text: 'The app need to have Manage All Files permission.'));
+      if (ok == true) {
+        await Permission.manageExternalStorage.request();
+      }
     }
   }
 

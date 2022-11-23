@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:files_syncer/logic/controllers/transform_server.dart';
-import 'package:files_syncer/logic/models/transform_server.dart';
+import 'package:files_syncer/logic/controllers/transfare_client.dart';
+import 'package:files_syncer/logic/models/transfare_client.dart';
 import 'package:files_syncer/ui/widgets/file_item.dart';
 import 'package:files_syncer/ui/widgets/title_bar.dart';
 import 'package:files_syncer/ui/widgets/yes_no_dialog.dart';
@@ -9,25 +9,25 @@ import 'package:files_syncer/utils/colors.dart';
 import 'package:files_syncer/utils/in_app_notifcation.dart';
 import 'package:flutter/material.dart';
 
-import 'package:files_syncer/network/tcp/server.dart';
+import 'package:files_syncer/network/tcp/client.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class TransformServerPageArgs {
-  ClientConnectionServer connection;
-  TransformServerPageArgs({
+class TransferClientPageArgs {
+  ClientConnectionClient connection;
+  TransferClientPageArgs({
     required this.connection,
   });
 }
 
-class TransformServerPage extends StatelessWidget {
-  final TransformServerPageArgs args;
-  const TransformServerPage({super.key, required this.args});
+class TransferClientPage extends StatelessWidget {
+  final TransferClientPageArgs args;
+  const TransferClientPage({super.key, required this.args});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       lazy: false,
-      create: (context) => TransformServerBloc(args.connection),
+      create: (context) => TransferClientBloc(args.connection),
       child: WillPopScope(
         onWillPop: () async =>
             (await showDialog(
@@ -47,7 +47,7 @@ class TransformServerPage extends StatelessWidget {
               : AppBar(
                   title: Text('connected to ${args.connection.name}'),
                 ),
-          body: BlocListener<TransformServerBloc, TransformServerState>(
+          body: BlocListener<TransferClientBloc, TransferClientState>(
             listenWhen: (previous, current) => current.connected == false,
             listener: (context, state) {
               if (Navigator.of(context).canPop()) {
@@ -69,17 +69,7 @@ class TransformServerPage extends StatelessWidget {
                   const SizedBox(
                     height: 8,
                   ),
-                  Builder(builder: (context) {
-                    return ElevatedButton(
-                      child: const Text('Browse'),
-                      onPressed: () {
-                        context
-                            .read<TransformServerBloc>()
-                            .add(SelectDirectoryClicked());
-                      },
-                    );
-                  }),
-                  BlocSelector<TransformServerBloc, TransformServerState,
+                  BlocSelector<TransferClientBloc, TransferClientState,
                       String?>(
                     selector: (state) {
                       return state.path;
@@ -97,8 +87,8 @@ class TransformServerPage extends StatelessWidget {
                       height: 42,
                       child: Stack(
                         children: [
-                          BlocSelector<TransformServerBloc,
-                              TransformServerState, double>(
+                          BlocSelector<TransferClientBloc, TransferClientState,
+                              double>(
                             selector: (state) {
                               return state.progressValue;
                             },
@@ -125,8 +115,8 @@ class TransformServerPage extends StatelessWidget {
                                       const SizedBox(
                                         width: 8,
                                       ),
-                                      BlocSelector<TransformServerBloc,
-                                          TransformServerState, String>(
+                                      BlocSelector<TransferClientBloc,
+                                          TransferClientState, String>(
                                         selector: (state) {
                                           return state.progress;
                                         },
@@ -141,8 +131,8 @@ class TransformServerPage extends StatelessWidget {
                                       const SizedBox(
                                         width: 8,
                                       ),
-                                      BlocSelector<TransformServerBloc,
-                                          TransformServerState, String>(
+                                      BlocSelector<TransferClientBloc,
+                                          TransferClientState, String>(
                                         selector: (state) {
                                           return state.speedInSecond;
                                         },
@@ -157,8 +147,8 @@ class TransformServerPage extends StatelessWidget {
                                     ],
                                   ),
                                 ),
-                                BlocSelector<TransformServerBloc,
-                                    TransformServerState, String>(
+                                BlocSelector<TransferClientBloc,
+                                    TransferClientState, String>(
                                   selector: (state) {
                                     return state.totalSize;
                                   },
@@ -183,14 +173,14 @@ class TransformServerPage extends StatelessWidget {
                     height: 16,
                   ),
                   Expanded(
-                    child: BlocSelector<TransformServerBloc,
-                        TransformServerState, List>(
+                    child: BlocSelector<TransferClientBloc, TransferClientState,
+                        List>(
                       selector: (state) => state.files,
                       builder: (context, state) {
                         return ListView.builder(
                           itemCount: state.length,
                           itemBuilder: (context, index) => Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            padding: const EdgeInsets.symmetric(vertical: 8),
                             child: FileItem(data: state[index]),
                           ),
                         );

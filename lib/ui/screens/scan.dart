@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:files_syncer/logic/controllers/scan.dart';
 import 'package:files_syncer/logic/models/scan.dart';
-import 'package:files_syncer/ui/screens/transform_client.dart';
+import 'package:files_syncer/ui/screens/transfare_client.dart';
 import 'package:files_syncer/ui/widgets/title_bar.dart';
 import 'package:files_syncer/utils/colors.dart';
 import 'package:files_syncer/utils/in_app_notifcation.dart';
@@ -34,7 +34,7 @@ class ScanPage extends StatelessWidget {
               // device connected
               Navigator.of(context).pushReplacementNamed(Routes.transformClient,
                   arguments:
-                      TransformClientPageArgs(connection: state.connection!));
+                      TransferClientPageArgs(connection: state.connection!));
             } else {
               // Connection Rejected
               showInAppNotification(context, 'Connection Rejected');

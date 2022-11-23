@@ -310,6 +310,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.5.0"
+  optimization_battery:
+    dependency: "direct main"
+    description:
+      name: optimization_battery
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.7"
   path:
     dependency: transitive
     description:
@@ -513,4 +520,4 @@ packages:
     version: "3.1.1"
 sdks:
   dart: ">=2.18.2 <3.0.0"
-  flutter: ">=2.11.0"
+  flutter: ">=3.0.0"

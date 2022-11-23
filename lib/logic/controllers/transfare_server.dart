@@ -7,37 +7,37 @@ import 'package:files_syncer/logic/models/file_model.dart';
 import 'package:files_syncer/utils/notifications.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 
-import 'package:files_syncer/logic/models/transform_server.dart';
+import 'package:files_syncer/logic/models/transfare_server.dart';
 import 'package:files_syncer/network/ftp/server.dart';
 import 'package:files_syncer/network/tcp/client.dart';
 import 'package:files_syncer/network/tcp/server.dart';
 
-abstract class _BaseTransformServerEvent {}
+abstract class _BaseTransferServerEvent {}
 
 // when user try to select directory
-class SelectDirectoryClicked extends _BaseTransformServerEvent {}
+class SelectDirectoryClicked extends _BaseTransferServerEvent {}
 
 // when receiver disconnected
-class ClientDisconnected extends _BaseTransformServerEvent {}
+class ClientDisconnected extends _BaseTransferServerEvent {}
 
 // when receiver send the directory tree
-class TransformData extends _BaseTransformServerEvent {
+class TransferData extends _BaseTransferServerEvent {
   List files;
-  TransformData({
+  TransferData({
     required this.files,
   });
 }
 
 // when file progress is sent by the receiver
-class ProgressChange extends _BaseTransformServerEvent {
+class ProgressChange extends _BaseTransferServerEvent {
   Map data;
   ProgressChange({
     required this.data,
   });
 }
 
-class TransformServerBloc
-    extends Bloc<_BaseTransformServerEvent, TransformServerState> {
+class TransferServerBloc
+    extends Bloc<_BaseTransferServerEvent, TransferServerState> {
   ClientConnectionServer connection;
   FTPServer? ftpServer;
   late int
@@ -47,7 +47,7 @@ class TransformServerBloc
   bool connected =
       true; // this bool will assigned to false on disconnect to remove the notification
 
-  TransformServerBloc(this.connection) : super(TransformServerState()) {
+  TransferServerBloc(this.connection) : super(TransferServerState()) {
     notificationID = Random().nextInt(1000000);
     connection.bloc = this;
     on<SelectDirectoryClicked>((event, emit) async {
@@ -62,7 +62,7 @@ class TransformServerBloc
         emit(state.copyWith(path: path));
       }
     });
-    on<TransformData>((event, emit) async {
+    on<TransferData>((event, emit) async {
       emit(
         state.copyWith(
             files: event.files.map((e) => FileModel.fromMap(e)).toList(),

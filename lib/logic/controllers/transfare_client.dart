@@ -10,16 +10,16 @@ import 'package:ftpconnect/ftpconnect.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:files_syncer/logic/models/file_model.dart';
-import 'package:files_syncer/logic/models/transform_client.dart';
+import 'package:files_syncer/logic/models/transfare_client.dart';
 import 'package:files_syncer/network/tcp/client.dart';
 
-abstract class _BaseTransformClientEvent {}
+abstract class _BaseTransferClientEvent {}
 
 // the sender was disconnected
-class ServerDisconnected extends _BaseTransformClientEvent {}
+class ServerDisconnected extends _BaseTransferClientEvent {}
 
 // the sender select directory
-class DirectorySelected extends _BaseTransformClientEvent {
+class DirectorySelected extends _BaseTransferClientEvent {
   // the directory tree
   Map data;
   DirectorySelected({
@@ -28,7 +28,7 @@ class DirectorySelected extends _BaseTransformClientEvent {
 }
 
 // when file progress is changed
-class _ChangeFileProgress extends _BaseTransformClientEvent {
+class _ChangeFileProgress extends _BaseTransferClientEvent {
   double progress;
   int index;
   int totalReceived;
@@ -39,7 +39,8 @@ class _ChangeFileProgress extends _BaseTransformClientEvent {
   });
 }
 
-class disconnect extends Bloc<_BaseTransformClientEvent, TransformClientState> {
+class TransferClientBloc
+    extends Bloc<_BaseTransferClientEvent, TransferClientState> {
   ClientConnectionClient connection;
   late int
       notificationID; // the id is used  to display the progress notification
@@ -47,7 +48,7 @@ class disconnect extends Bloc<_BaseTransformClientEvent, TransformClientState> {
       0; // the index of the file that currently is being received
   bool connected =
       true; // this bool will assigned to false on disconnect to remove the notification
-  disconnect(this.connection) : super(TransformClientState()) {
+  TransferClientBloc(this.connection) : super(TransferClientState()) {
     connection.bloc = this;
     notificationID = Random().nextInt(1000000);
     on<DirectorySelected>((event, emit) async {
@@ -57,7 +58,7 @@ class disconnect extends Bloc<_BaseTransformClientEvent, TransformClientState> {
         if (path != null) {
           // get the files that need to be sent and send it to the sender
           List<Map<String, dynamic>> files = _compareFiles(path, event.data);
-          connection.sendTransformData(files);
+          connection.sendTransferData(files);
           emit(
             state.copyWith(
               path: path,

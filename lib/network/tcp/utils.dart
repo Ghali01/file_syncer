@@ -6,6 +6,6 @@ class OPCodes {
   static const int HandShake = 2;
   static const int RejectHandShake = 3;
   static const int DirectorySelected = 4;
-  static const int TransformData = 5;
+  static const int TransferData = 5;
   static const int ProgressChange = 6;
 }

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:files_syncer/logic/controllers/host.dart';
-import 'package:files_syncer/logic/controllers/transform_server.dart';
+import 'package:files_syncer/logic/controllers/transfare_server.dart';
 import 'package:files_syncer/network/tcp/utils.dart';
 import 'package:files_syncer/utils/functions.dart';
 import 'package:flutter/foundation.dart';
@@ -60,7 +60,7 @@ class AppServer {
 class ClientConnectionServer {
   Socket socket;
   Stream<Uint8List> output;
-  TransformServerBloc? bloc;
+  TransferServerBloc? bloc;
   String name;
   StreamSubscription? _subscription;
   ClientConnectionServer(
@@ -113,8 +113,8 @@ class ClientConnectionServer {
         List<int> msg = buffer.sublist(0, index);
         buffer.removeRange(0, index + 3);
 
-        if (msg.first == OPCodes.TransformData) {
-          _onTransformDataReceived(msg);
+        if (msg.first == OPCodes.TransferData) {
+          _onTransferDataReceived(msg);
         }
         if (msg.first == OPCodes.ProgressChange) {
           _onProgressChangeReceived(msg);
@@ -125,10 +125,10 @@ class ClientConnectionServer {
     }
   }
 
-  void _onTransformDataReceived(List<int> encodedMsg) {
+  void _onTransferDataReceived(List<int> encodedMsg) {
     String json = utf8.decode(encodedMsg.sublist(1));
     List data = jsonDecode(json);
-    bloc?.add(TransformData(files: data));
+    bloc?.add(TransferData(files: data));
   }
 
   void _onProgressChangeReceived(List<int> encodedMsg) {

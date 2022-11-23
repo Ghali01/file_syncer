@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:files_syncer/logic/controllers/transform_client.dart';
+import 'package:files_syncer/logic/controllers/transfare_client.dart';
 import 'package:files_syncer/network/tcp/server.dart';
 import 'package:files_syncer/network/tcp/utils.dart';
 import 'package:files_syncer/utils/functions.dart';
@@ -13,7 +13,7 @@ class ClientConnectionClient {
   late Stream<Uint8List> output;
   late String name;
   String address;
-  disconnect? bloc;
+  TransferClientBloc? bloc;
   StreamSubscription? _subscription;
   ClientConnectionClient({
     required this.address,
@@ -100,10 +100,10 @@ class ClientConnectionClient {
     bloc?.add(DirectorySelected(data: data));
   }
 
-  void sendTransformData(List data) {
+  void sendTransferData(List data) {
     String json = jsonEncode(data);
     List encodedMsg = utf8.encode(json);
-    _socket.add([OPCodes.TransformData, ...encodedMsg, 0, 0, 0]);
+    _socket.add([OPCodes.TransferData, ...encodedMsg, 0, 0, 0]);
   }
 
   void sendProgressChange(Map data) {

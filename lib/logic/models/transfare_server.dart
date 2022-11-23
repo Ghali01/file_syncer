@@ -1,7 +1,7 @@
-import 'package:files_syncer/logic/models/transform_base.dart';
+import 'package:files_syncer/logic/models/transfare_base.dart';
 
-class TransformServerState extends TransformBaseState {
-  TransformServerState({
+class TransferServerState extends TransferBaseState {
+  TransferServerState({
     super.path,
     super.speed,
     super.speedPerSecond,
@@ -12,7 +12,7 @@ class TransformServerState extends TransformBaseState {
     super.totalReceived = 0,
   });
 
-  TransformServerState copyWith({
+  TransferServerState copyWith({
     String? path,
     List? files,
     bool? connected,
@@ -22,7 +22,7 @@ class TransformServerState extends TransformBaseState {
     int? speed,
     int? totalReceived,
   }) {
-    return TransformServerState(
+    return TransferServerState(
       path: path ?? this.path,
       speed: speed ?? this.speed,
       files: files ?? this.files,

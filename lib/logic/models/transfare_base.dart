@@ -1,6 +1,6 @@
 import 'package:files_syncer/utils/functions.dart';
 
-abstract class TransformBaseState {
+abstract class TransferBaseState {
   String? path;
   List files;
   int? totalLength;
@@ -9,7 +9,7 @@ abstract class TransformBaseState {
   int? speed;
   int? speedPerSecond;
   bool sending;
-  TransformBaseState({
+  TransferBaseState({
     this.path,
     this.speed,
     this.speedPerSecond,
