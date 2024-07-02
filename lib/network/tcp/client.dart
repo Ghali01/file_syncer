@@ -11,6 +11,7 @@ import 'package:files_syncer/utils/functions.dart';
 class ClientConnectionClient {
   late Socket _socket;
   late Stream<Uint8List> output;
+  //the device name
   late String name;
   String address;
   TransferClientBloc? bloc;

@@ -9,7 +9,9 @@ import 'package:flutter/foundation.dart';
 
 class AppServer {
   static const int port = 48510;
+  //the tcp server instance
   late ServerSocket _tcpServer;
+  //a Subscription for coming connections
   late StreamSubscription _serverSub;
   HostBloc bloc;
   AppServer(this.bloc) {
@@ -32,6 +34,7 @@ class AppServer {
     }
   }
 
+//trigger when a clint find the server and request for its name
   void sendIdentification(Socket conn) async {
     String name = await getDeviceName();
     List<int> msg = [];
@@ -40,6 +43,7 @@ class AppServer {
     conn.add(msg);
   }
 
+//trigger when a client send handshake request
   void raiseConnection(
       Uint8List msg, Socket conn, Stream<Uint8List> output) async {
     List<int> data = msg.toList()..removeAt(0);

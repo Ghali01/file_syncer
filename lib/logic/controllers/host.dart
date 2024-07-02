@@ -42,12 +42,12 @@ class HostBloc extends Bloc<_BaseHostEvent, HostState> {
       event.connection.sendAcceptHandshake();
       emit(state.copyWith(connected: true));
     });
+    on<RejectConnectionEvent>((event, emit) {
+      event.connection.sendRejectHandshake();
+    });
     on<CloseHostEvent>((event, emit) async {
       await server.close();
       emit(state.copyWith(closed: true));
-    });
-    on<RejectConnectionEvent>((event, emit) {
-      event.connection.sendRejectHandshake();
     });
   }
 
