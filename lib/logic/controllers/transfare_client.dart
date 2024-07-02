@@ -5,7 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:files_syncer/utils/notifications.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
 import 'package:ftpconnect/ftpconnect.dart';
 import 'package:permission_handler/permission_handler.dart';
 

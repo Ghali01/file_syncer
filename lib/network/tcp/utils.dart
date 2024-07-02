@@ -1,6 +1,3 @@
-import 'dart:io';
-import 'dart:typed_data';
-
 class OPCodes {
   static const int Identification = 1;
   static const int HandShake = 2;

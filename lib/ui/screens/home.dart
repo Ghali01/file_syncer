@@ -1,14 +1,15 @@
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:files_syncer/network/ftp/server.dart';
 import 'package:files_syncer/ui/widgets/perm_dialog.dart';
 import 'package:files_syncer/ui/widgets/title_bar.dart';
-import 'package:files_syncer/utils/in_app_notifcation.dart';
-import 'package:files_syncer/utils/notifications.dart';
+
 import 'package:files_syncer/utils/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:network_info_plus/network_info_plus.dart';
 import 'package:optimization_battery/optimization_battery.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -141,18 +142,16 @@ class _HomePageState extends State<HomePage> {
                   size: 60,
                 ),
               ),
-              // ElevatedButton(
-              //     onPressed: () async {
-              //       if (ftpServer == null) {
-              //         ftpServer = FTPServer(
-              //             '192.168.1.5', 40521, 'F:\\test', 'user', '1234');
-              //         await ftpServer?.start();
-              //       } else {
-              //         await ftpServer?.stop();
-              //         ftpServer = null;
-              //       }
-              //     },
-              //     child: const Text('test')),
+              ElevatedButton(
+                  onPressed: () async {
+                    String? path = await FilePicker.platform.getDirectoryPath();
+                    NetworkInfo info = NetworkInfo();
+                    String host = (await info.getWifiIP())!;
+                    FTPServer server =
+                        FTPServer(host, 21401, path!, 'user', '1234');
+                    server.start();
+                  },
+                  child: const Text('test')),
             ],
           ),
         ),

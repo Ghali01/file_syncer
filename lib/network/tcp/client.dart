@@ -53,7 +53,7 @@ class ClientConnectionClient {
     return false;
   }
 
-  int? _checkOnSufix(List buffer) {
+  int? _checkOnSuffix(List buffer) {
     List zeros = [];
     int i = 0;
     for (var byte in buffer) {
@@ -67,6 +67,7 @@ class ClientConnectionClient {
       }
       i++;
     }
+    return null;
   }
 
   Future<void> _listenToEvents() async {
@@ -81,7 +82,7 @@ class ClientConnectionClient {
       connected = false;
     });
     while (connected) {
-      int? index = _checkOnSufix(buffer);
+      int? index = _checkOnSuffix(buffer);
       if (index != null) {
         List<int> msg = buffer.sublist(0, index);
         buffer.removeRange(0, index + 3);

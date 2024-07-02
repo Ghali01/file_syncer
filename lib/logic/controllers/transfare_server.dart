@@ -9,7 +9,7 @@ import 'package:network_info_plus/network_info_plus.dart';
 
 import 'package:files_syncer/logic/models/transfare_server.dart';
 import 'package:files_syncer/network/ftp/server.dart';
-import 'package:files_syncer/network/tcp/client.dart';
+
 import 'package:files_syncer/network/tcp/server.dart';
 
 abstract class _BaseTransferServerEvent {}

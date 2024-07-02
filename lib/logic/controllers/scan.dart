@@ -41,7 +41,7 @@ class ScanCubit extends Cubit<ScanState> {
           devices.add(connection);
         }
       }
-    } on SocketException catch (e) {}
+    } on SocketException catch (_) {}
 
     emit(state.copyWith(scanning: false, devices: devices));
   }

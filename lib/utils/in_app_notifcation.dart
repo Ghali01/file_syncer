@@ -4,7 +4,7 @@ import 'package:files_syncer/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 void showInAppNotification(BuildContext context, String message) {
-  OverlayState overlayState = Overlay.of(context)!;
+  OverlayState overlayState = Overlay.of(context);
   OverlayEntry entry = OverlayEntry(
       builder: (_) => InAppNotification(
             message: message,

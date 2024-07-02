@@ -1,5 +1,4 @@
 import 'package:files_syncer/network/tcp/client.dart';
-import 'package:files_syncer/network/tcp/utils.dart';
 
 class ScanState {
   bool scanning;

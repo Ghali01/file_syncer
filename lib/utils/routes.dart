@@ -36,5 +36,6 @@ class Routes {
                   args: args,
                 ));
     }
+    return null;
   }
 }
