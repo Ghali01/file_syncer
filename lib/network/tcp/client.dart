@@ -54,6 +54,8 @@ class ClientConnectionClient {
     return false;
   }
 
+  //a method checks if there is a complete message in the buffer
+//and return the index of the end of that message
   int? _checkOnSuffix(List buffer) {
     List zeros = [];
     int i = 0;
@@ -73,27 +75,27 @@ class ClientConnectionClient {
 
   Future<void> _listenToEvents() async {
     List<int> buffer = [];
-    bool connected = true;
+    print('zzzz');
     _subscription = output.listen((event) {
-//add the bytes to the buffer
+      //add the bytes to the buffer
       buffer.addAll(event);
+      print(event);
+      int? index = _checkOnSuffix(buffer);
+      //while there is completed messages in the buffer handle it
+      while (index != null) {
+        List<int> msg = buffer.sublist(0, index);
+        buffer.removeRange(0, index + 3);
+
+        if (msg.first == OPCodes.DirectorySelected) {
+          print('dir sel');
+          onDirectorySelected(msg);
+        }
+        index = _checkOnSuffix(buffer);
+      }
     }, onDone: () {
       // socket disconnected
       bloc?.add(ServerDisconnected());
-      connected = false;
     });
-    while (connected) {
-      int? index = _checkOnSuffix(buffer);
-      if (index != null) {
-        List<int> msg = buffer.sublist(0, index);
-        buffer.removeRange(0, index + 3);
-        if (msg.first == OPCodes.DirectorySelected) {
-          onDirectorySelected(msg);
-        }
-      } else {
-        await Future.delayed(const Duration(milliseconds: 150));
-      }
-    }
   }
 
   void onDirectorySelected(List<int> encodedMsg) {

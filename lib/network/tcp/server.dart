@@ -49,8 +49,7 @@ class AppServer {
     List<int> data = msg.toList()..removeAt(0);
     String name = utf8.decode(data);
     await close();
-    var connection =
-        ClientConnectionServer(socket: conn, output: output, name: name);
+    var connection = rerun(socket: conn, output: output, name: name);
     bloc.add(NewConnectionEvent(connection: connection));
   }
 
@@ -60,14 +59,13 @@ class AppServer {
   }
 }
 
-class ClientConnectionServer {
+class rerun {
   Socket socket;
   Stream<Uint8List> output;
   TransferServerBloc? bloc;
   String name;
   StreamSubscription? _subscription;
-  ClientConnectionServer(
-      {required this.socket, required this.output, required this.name}) {
+  rerun({required this.socket, required this.output, required this.name}) {
     _listenToEvents().then((value) => null);
   }
 
@@ -85,6 +83,8 @@ class ClientConnectionServer {
     socket.add([OPCodes.DirectorySelected, ...encodedMsg, 0, 0, 0]);
   }
 
+//a method checks if there is a complete message in the buffer
+//and return the index of the end of that message
   int? _checkOnSuffix(List buffer) {
     List zeros = [];
     int i = 0;
@@ -104,29 +104,25 @@ class ClientConnectionServer {
 
   Future<void> _listenToEvents() async {
     List<int> buffer = [];
-    bool connected = true;
     _subscription = output.listen((event) {
+      //add the received bytes to the buffer
       buffer.addAll(event);
-    }, onDone: () {
-      bloc?.add(ClientDisconnected());
-      connected = false;
-    });
-    while (connected) {
+      //while there is completed messages in the buffer handle it
       int? index = _checkOnSuffix(buffer);
-      if (index != null) {
+      while (index != null) {
         List<int> msg = buffer.sublist(0, index);
         buffer.removeRange(0, index + 3);
-
         if (msg.first == OPCodes.TransferData) {
           _onTransferDataReceived(msg);
         }
         if (msg.first == OPCodes.ProgressChange) {
           _onProgressChangeReceived(msg);
         }
-      } else {
-        await Future.delayed(const Duration(milliseconds: 150));
+        index = _checkOnSuffix(buffer);
       }
-    }
+    }, onDone: () {
+      bloc?.add(ClientDisconnected());
+    });
   }
 
   void _onTransferDataReceived(List<int> encodedMsg) {

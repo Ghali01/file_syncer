@@ -9,7 +9,7 @@ abstract class _BaseHostEvent {}
 class CloseHostEvent extends _BaseHostEvent {}
 
 abstract class _ConnectionToHostEvent extends _BaseHostEvent {
-  ClientConnectionServer connection;
+  rerun connection;
   _ConnectionToHostEvent({
     required this.connection,
   });

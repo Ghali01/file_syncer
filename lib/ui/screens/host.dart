@@ -31,7 +31,7 @@ class HostPage extends StatelessWidget {
           listener: (context, state) async {
             if (state.connection != null && !state.connected) {
               // a device try to connect
-              ClientConnectionServer connection = state.connection!;
+              rerun connection = state.connection!;
               bool? accept = await showDialog(
                   context: context,
                   builder: (_) => YesNoDialog(

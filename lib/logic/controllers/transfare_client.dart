@@ -53,6 +53,7 @@ class TransferClientBloc
     notificationID = Random().nextInt(1000000);
     on<DirectorySelected>((event, emit) async {
       bool prmStatus = await _checkPerm(); //check on storage permissions
+      print("perm $prmStatus");
       if (prmStatus) {
         String? path = await FilePicker.platform.getDirectoryPath();
         if (path != null) {
