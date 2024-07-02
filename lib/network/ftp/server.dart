@@ -1,8 +1,5 @@
-import 'dart:io';
-
-import 'package:files_syncer/network/ftp/android.dart';
-import 'package:files_syncer/network/ftp/base.dart';
-import 'package:files_syncer/network/ftp/windows.dart';
+import 'package:ftp_server/ftp_server.dart' as ftp;
+import 'package:ftp_server/server_type.dart';
 
 class FTPServer {
   final String address;
@@ -10,30 +7,24 @@ class FTPServer {
   final String directory;
   final String user;
   final String password;
-  late FTPHandler _handler;
+  late final ftp.FtpServer server;
+  // late FTPHandler _handler;
   FTPServer(this.address, this.port, this.directory, this.user, this.password) {
-    if (Platform.isWindows) {
-      _handler = WindowsFTPHandler(
-          address: address,
-          port: port,
-          directory: directory,
-          user: user,
-          password: password);
-    }
-    if (Platform.isAndroid) {
-      _handler = AndroidFTPHandler(
-          address: address,
-          port: port,
-          directory: directory,
-          user: user,
-          password: password);
-    }
+    server = ftp.FtpServer(
+      port,
+      username: user,
+      password: password,
+      allowedDirectories: [directory],
+      startingDirectory: directory,
+      serverType: ServerType.readAndWrite, // or ServerType.readOnly
+    );
   }
   Future<void> start() async {
-    await _handler.start();
+    await server.start();
+    // await _handler.start();
   }
 
   Future<void> stop() async {
-    await _handler.stop();
+    await server.stop();
   }
 }
