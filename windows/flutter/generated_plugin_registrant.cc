@@ -10,6 +10,7 @@
 #include <network_info_plus/network_info_plus_windows_plugin.h>
 #include <permission_handler_windows/permission_handler_windows_plugin.h>
 #include <python_channel/python_channel_plugin_c_api.h>
+#include <windows_taskbar/windows_taskbar_plugin.h>
 
 void RegisterPlugins(flutter::PluginRegistry* registry) {
   BitsdojoWindowPluginRegisterWithRegistrar(
@@ -20,4 +21,6 @@ void RegisterPlugins(flutter::PluginRegistry* registry) {
       registry->GetRegistrarForPlugin("PermissionHandlerWindowsPlugin"));
   PythonChannelPluginCApiRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("PythonChannelPluginCApi"));
+  WindowsTaskbarPluginRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("WindowsTaskbarPlugin"));
 }

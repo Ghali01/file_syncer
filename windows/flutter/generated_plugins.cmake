@@ -7,6 +7,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   network_info_plus
   permission_handler_windows
   python_channel
+  windows_taskbar
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST

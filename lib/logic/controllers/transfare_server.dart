@@ -75,11 +75,14 @@ class TransferServerBloc
         // every second the value of this variable will moved to speedPerSecond
         // and the speed variable will assign to 0emit(state.copyWith(speedPerSecond: state.speed, speed: 0));
         emit(state.copyWith(speedPerSecond: state.speed, speed: 0));
+
         NotificationsManager.show(
-            notificationID,
-            'Connected to ${connection.name}',
-            '${state.files[currentIndex].path} | ${state.speedInSecond}',
-            state.files[currentIndex].progress.toInt());
+          notificationID,
+          'Connected to ${connection.name}',
+          '${state.files[currentIndex].path} | ${state.speedInSecond}',
+          state.files[currentIndex].progress.toInt(),
+          state.progressValue.toInt(),
+        );
         await Future.delayed(const Duration(seconds: 1));
       } while (state.sending && connected);
       NotificationsManager.closeAll();

@@ -8,7 +8,6 @@ class FTPServer {
   final String user;
   final String password;
   late final ftp.FtpServer server;
-  // late FTPHandler _handler;
   FTPServer(this.address, this.port, this.directory, this.user, this.password) {
     server = ftp.FtpServer(
       port,
@@ -21,7 +20,6 @@ class FTPServer {
   }
   Future<void> start() async {
     await server.start();
-    // await _handler.start();
   }
 
   Future<void> stop() async {

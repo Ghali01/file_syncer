@@ -84,7 +84,8 @@ class TransferClientBloc
                 notificationID,
                 'Connected to ${connection.name}',
                 '${state.files[currentIndex].path} | ${state.speedInSecond}',
-                state.files[currentIndex].progress.toInt());
+                state.files[currentIndex].progress.toInt(),
+                state.progressValue.toInt());
             await Future.delayed(const Duration(seconds: 1));
           } while (state.sending && connected);
           NotificationsManager.closeAll();
