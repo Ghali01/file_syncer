@@ -2,12 +2,11 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:bloc/bloc.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:files_syncer/utils/notifications.dart';
+import 'package:files_syncer/utils/permissions.dart';
 
 import 'package:ftpconnect/ftpconnect.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import 'package:files_syncer/logic/models/file_model.dart';
 import 'package:files_syncer/logic/models/transfare_client.dart';
@@ -52,7 +51,8 @@ class TransferClientBloc
     connection.bloc = this;
     notificationID = Random().nextInt(1000000);
     on<DirectorySelected>((event, emit) async {
-      bool prmStatus = await _checkPerm(); //check on storage permissions
+      bool prmStatus = await AppPermissions()
+          .checkStoragePerm(); //check on storage permissions
       print("perm $prmStatus");
       if (prmStatus) {
         String? path = await FilePicker.platform.getDirectoryPath();
@@ -179,41 +179,6 @@ class TransferClientBloc
       index++;
     }
     await ftpConnect.disconnect();
-  }
-
-  Future<bool> _checkPerm() async {
-    if (Platform.isWindows) {
-      return true;
-    } else {
-      var status = await Permission.storage.isGranted;
-      if (!status) {
-        var req = await Permission.storage.request();
-        if (req.isGranted) {
-          return await _checkAllPerm();
-        } else {
-          return false;
-        }
-      } else {
-        return await _checkAllPerm();
-      }
-    }
-  }
-
-  Future<bool> _checkAllPerm() async {
-    DeviceInfoPlugin info = DeviceInfoPlugin();
-    var data = await info.androidInfo;
-    AndroidBuildVersion version = data.version;
-    if (version.sdkInt < 30) {
-      return true;
-    }
-
-    var status = await Permission.manageExternalStorage.isGranted;
-    if (!status) {
-      var req = await Permission.manageExternalStorage.request();
-      return req.isGranted;
-    } else {
-      return true;
-    }
   }
 
   int _calcLength(List<Map> files) {
