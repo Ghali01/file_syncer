@@ -8,11 +8,14 @@ import 'package:files_syncer/ui/widgets/title_bar.dart';
 import 'package:files_syncer/utils/permissions.dart';
 
 import 'package:files_syncer/utils/routes.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:ftpconnect/ftpconnect.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:optimization_battery/optimization_battery.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:pure_ftp/pure_ftp.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -143,17 +146,46 @@ class _HomePageState extends State<HomePage> {
                   size: 60,
                 ),
               ),
-              ElevatedButton(
-                  onPressed: () async {
-                    await AppPermissions().checkStoragePerm();
-                    // String? path = await FilePicker.platform.getDirectoryPath();
-                    // NetworkInfo info = NetworkInfo();
-                    // String host = (await info.getWifiIP())!;
-                    // FTPServer server =
-                    //     FTPServer(host, 21401, path!, 'user', '1234');
-                    // server.start();
-                  },
-                  child: const Text('test')),
+              Visibility(
+                visible: kDebugMode,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: ElevatedButton(
+                      onPressed: () async {
+                        if (Platform.isWindows) {
+                          String? path =
+                              await FilePicker.platform.getDirectoryPath();
+                          NetworkInfo info = NetworkInfo();
+                          String host = (await info.getWifiIP())!;
+                          FTPServer server =
+                              FTPServer(host, 21401, path!, 'user', '1234');
+                          print('starting server');
+                          await server.start();
+                          print('server started');
+                        } else {
+                          final client = FtpClient(
+                            socketInitOptions: FtpSocketInitOptions(
+                              host: '192.168.1.7',
+                              port: 21401,
+                            ),
+                            authOptions: FtpAuthOptions(
+                              username: 'user',
+                              password: '1234',
+                            ),
+                            logCallback: print,
+                          );
+                          await client.connect();
+
+                          print('connected');
+                          client.fs
+                              .downloadFileStream(client.getFile(
+                                  "/BIA/PDFs/Intelligent Algorithms - CH1.pdf"))
+                              .listen((e) => print(e.length));
+                        }
+                      },
+                      child: const Text('test')),
+                ),
+              ),
             ],
           ),
         ),

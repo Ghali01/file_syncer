@@ -6,11 +6,10 @@ import 'package:file_picker/file_picker.dart';
 import 'package:files_syncer/utils/notifications.dart';
 import 'package:files_syncer/utils/permissions.dart';
 
-import 'package:ftpconnect/ftpconnect.dart';
-
 import 'package:files_syncer/logic/models/file_model.dart';
 import 'package:files_syncer/logic/models/transfare_client.dart';
 import 'package:files_syncer/network/tcp/client.dart';
+import 'package:pure_ftp/pure_ftp.dart';
 
 abstract class _BaseTransferClientEvent {}
 
@@ -157,28 +156,41 @@ class TransferClientBloc
 // download the files
   ///[rootPath] is the selected dir from the receiver and here used to refer to the files
   Future<void> _getFiles(String rootPath, List files) async {
-    FTPConnect ftpConnect =
-        FTPConnect(connection.address, port: 21401, user: 'user', pass: '1234');
-    await ftpConnect.connect();
+    final client = FtpClient(
+      socketInitOptions: FtpSocketInitOptions(
+        host: '192.168.1.7',
+        port: 21401,
+      ),
+      authOptions: FtpAuthOptions(
+        username: 'user',
+        password: '1234',
+      ),
+      logCallback: print,
+    );
+    await client.connect();
+
+    print('connected');
     int index = 0;
     for (String path in files) {
-      // back to the ftp server
-      await ftpConnect.changeDirectory('/');
-      // navigate to the file
-      List lp = path.split('/');
-      String name = lp.removeLast();
-      for (var sig in lp) {
-        await ftpConnect.changeDirectory(sig);
+      final remoteFile = client.getFile(path);
+      final totalSize = await remoteFile.size();
+      int received = 0;
+      final file = File(rootPath + path);
+      final fi = file.openWrite();
+
+      await for (final chunk in client.fs.downloadFileStream(remoteFile)) {
+        received += chunk.length;
+        fi.add(chunk);
+        add(_ChangeFileProgress(
+            progress: received / totalSize * 100,
+            index: index,
+            totalReceived: received));
       }
-      await ftpConnect.downloadFile(
-        name,
-        File(rootPath + path),
-        onProgress: (progress, totalReceived, __) => add(_ChangeFileProgress(
-            progress: progress, index: index, totalReceived: totalReceived)),
-      );
+      fi.close();
       index++;
     }
-    await ftpConnect.disconnect();
+
+    await client.disconnect();
   }
 
   int _calcLength(List<Map> files) {

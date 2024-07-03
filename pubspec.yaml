@@ -49,6 +49,7 @@ dependencies:
   optimization_battery: ^0.0.7
   ftp_server: ^0.0.6
   windows_taskbar: ^1.1.2
+  pure_ftp: ^0.5.2
 dev_dependencies:
   flutter_test:
     sdk: flutter

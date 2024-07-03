@@ -15,6 +15,7 @@ class FTPServer {
       password: password,
       allowedDirectories: [directory],
       startingDirectory: directory,
+      logFunction: print,
       serverType: ServerType.readAndWrite, // or ServerType.readOnly
     );
   }

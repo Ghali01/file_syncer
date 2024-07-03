@@ -504,6 +504,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.4"
+  pure_ftp:
+    dependency: "direct main"
+    description:
+      name: pure_ftp
+      sha256: "954302535216ea65ae4f3fb49bef682d480f5832caabcc742494148c44751639"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.2"
   python_channel:
     dependency: "direct main"
     description:
