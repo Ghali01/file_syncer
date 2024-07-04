@@ -31,7 +31,7 @@ class HostPage extends StatelessWidget {
           listener: (context, state) async {
             if (state.connection != null && !state.connected) {
               // a device try to connect
-              rerun connection = state.connection!;
+              ClientConnectionServer connection = state.connection!;
               bool? accept = await showDialog(
                   context: context,
                   builder: (_) => YesNoDialog(
@@ -40,14 +40,10 @@ class HostPage extends StatelessWidget {
                           '${connection.name} try to connect to your device.'));
               if (accept == true) {
                 // handshake was accepted
-                context
-                    .read<HostBloc>()
-                    .add(AcceptConnectionEvent(connection: connection));
+                context.read<HostBloc>().acceptConnection(connection);
               } else {
                 // handshake was rejected or dialog was canceled
-                context
-                    .read<HostBloc>()
-                    .add(RejectConnectionEvent(connection: connection));
+                context.read<HostBloc>().rejectConnection(connection);
               }
             }
             if (state.connected) {

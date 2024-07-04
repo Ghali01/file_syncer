@@ -1,20 +1,21 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:files_syncer/logic/controllers/host.dart';
 import 'package:files_syncer/logic/controllers/transfare_server.dart';
+import 'package:files_syncer/network/tcp/server_listener.dart';
 import 'package:files_syncer/network/tcp/utils.dart';
 import 'package:files_syncer/utils/functions.dart';
 import 'package:flutter/foundation.dart';
 
+/// the ftp server of the app this class starts the ftp server and start listen on the coming connection
 class AppServer {
   static const int port = 48510;
   //the tcp server instance
   late ServerSocket _tcpServer;
   //a Subscription for coming connections
   late StreamSubscription _serverSub;
-  HostBloc bloc;
-  AppServer(this.bloc) {
+  IServerListener? listener;
+  AppServer() {
     ServerSocket.bind(InternetAddress.anyIPv4, port).then((value) {
       _tcpServer = value;
       _serverSub = _tcpServer.listen(_listenToConnections);
@@ -49,8 +50,9 @@ class AppServer {
     List<int> data = msg.toList()..removeAt(0);
     String name = utf8.decode(data);
     await close();
-    var connection = rerun(socket: conn, output: output, name: name);
-    bloc.add(NewConnectionEvent(connection: connection));
+    var connection =
+        ClientConnectionServer(socket: conn, output: output, name: name);
+    listener?.onNewConnection(connection);
   }
 
   Future<void> close() async {
@@ -59,13 +61,14 @@ class AppServer {
   }
 }
 
-class rerun {
+class ClientConnectionServer {
   Socket socket;
   Stream<Uint8List> output;
   TransferServerBloc? bloc;
   String name;
   StreamSubscription? _subscription;
-  rerun({required this.socket, required this.output, required this.name}) {
+  ClientConnectionServer(
+      {required this.socket, required this.output, required this.name}) {
     _listenToEvents().then((value) => null);
   }
 

@@ -38,7 +38,7 @@ class ProgressChange extends _BaseTransferServerEvent {
 
 class TransferServerBloc
     extends Bloc<_BaseTransferServerEvent, TransferServerState> {
-  rerun connection;
+  ClientConnectionServer connection;
   FTPServer? ftpServer;
   late int
       notificationID; // the id is used  to display the progress notification

@@ -3,7 +3,7 @@ import 'package:files_syncer/network/tcp/server.dart';
 class HostState {
   bool connected;
   bool closed;
-  rerun? connection;
+  ClientConnectionServer? connection;
   HostState({
     this.connected = false,
     this.closed = false,
@@ -13,7 +13,7 @@ class HostState {
   HostState copyWith({
     bool? connected,
     bool? closed,
-    rerun? connection,
+    ClientConnectionServer? connection,
   }) {
     return HostState(
       connected: connected ?? this.connected,

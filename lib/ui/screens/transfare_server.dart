@@ -13,7 +13,7 @@ import 'package:files_syncer/network/tcp/server.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TransferServerPageArgs {
-  rerun connection;
+  ClientConnectionServer connection;
   TransferServerPageArgs({
     required this.connection,
   });

@@ -50,6 +50,7 @@ dependencies:
   ftp_server: ^0.0.6
   windows_taskbar: ^1.1.2
   pure_ftp: ^0.5.2
+  get_it: ^7.7.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
