@@ -4,7 +4,6 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   bitsdojo_window_windows
-  network_info_plus
   permission_handler_windows
   python_channel
   windows_taskbar

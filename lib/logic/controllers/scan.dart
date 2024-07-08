@@ -3,9 +3,8 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:files_syncer/logic/models/scan.dart';
 import 'package:files_syncer/network/tcp/client.dart';
+import 'package:files_syncer/network/tcp/scanner.dart';
 import 'package:files_syncer/network/tcp/server.dart';
-import 'package:network_info_plus/network_info_plus.dart';
-import 'package:ping_discover_network_forked/ping_discover_network_forked.dart';
 
 class ScanCubit extends Cubit<ScanState> {
   ScanCubit() : super(ScanState()) {
@@ -13,33 +12,18 @@ class ScanCubit extends Cubit<ScanState> {
   }
   Future<void> scan() async {
     emit(state.copyWith(scanning: true));
-    // get the privet ip
-    String ip;
-    if (Platform.isAndroid) {
-      List<NetworkInterface> ips = await NetworkInterface.list();
-      ip = ips.first.addresses.first.address;
-    } else {
-      NetworkInfo info = NetworkInfo();
-      ip = (await info.getWifiIP())!;
-    }
-    // get the subnet from the ip
-    List l = ip.split('.')..removeLast();
-    // print(ip);
-    String subnet = l.join('.');
+
     List<ClientConnectionClient> devices = [];
     try {
-      var stream = NetworkAnalyzer.discover2(subnet, AppServer.port,
-          timeout: const Duration(seconds: 7));
+      var stream = await NetworkScanner().scan(AppServer.port);
       // scan through the network
       await for (var address in stream) {
-        if (address.exists) {
-          print(address.ip);
-          ClientConnectionClient connection =
-              ClientConnectionClient(address: address.ip);
-          // connect to the host (create channel)
-          await connection.connect();
-          devices.add(connection);
-        }
+        print(address);
+        ClientConnectionClient connection =
+            ClientConnectionClient(address: address);
+        // connect to the host (create channel)
+        await connection.connect();
+        devices.add(connection);
       }
     } on SocketException catch (_) {}
 
