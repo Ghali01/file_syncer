@@ -151,11 +151,7 @@ class _HomePageState extends State<HomePage> {
                 child: Padding(
                   padding: const EdgeInsets.only(top: 16),
                   child: ElevatedButton(
-                      onPressed: () async {
-                        (await NetworkScanner().scan(AppServer.port))
-                            .listen(print);
-                      },
-                      child: const Text('test')),
+                      onPressed: () async {}, child: const Text('test')),
                 ),
               ),
             ],

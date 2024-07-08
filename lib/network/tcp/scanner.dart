@@ -7,6 +7,13 @@ import 'package:network_info_plus/network_info_plus.dart';
 typedef ipAddress = List<List<int>>;
 
 class NetworkScanner {
+  final NetworkInfo networkInfo;
+
+  NetworkScanner(this.networkInfo);
+
+  Future<String> get subnetMask async => (await networkInfo.getWifiSubmask())!;
+  Future<String> get deviceIp async => (await networkInfo.getWifiIP())!;
+
   /// convert [int] to 8-integer list as binary
   List<int> _intToBin(int num) {
     List<int> res = [];
@@ -73,9 +80,8 @@ class NetworkScanner {
   /// get the last device ip
   Future<ipAddress> _getLastIPBin() async {
     final networkIp = await _getNetworkIPBin();
-    final NetworkInfo networkInfo = NetworkInfo();
-    final String subnet = (await networkInfo.getWifiSubmask())!;
-    final subnetBin = _addressToBin(subnet);
+
+    final subnetBin = _addressToBin(await subnetMask);
     final ipAddress address = [];
     for (var i = 0; i < 4; i++) {
       final List<int> dig = [];
@@ -116,11 +122,8 @@ class NetworkScanner {
 
   /// returns the network ip address as binary
   Future<ipAddress> _getNetworkIPBin() async {
-    final NetworkInfo networkInfo = NetworkInfo();
-    final String deviceIp = (await networkInfo.getWifiIP())!;
-    final String subnet = (await networkInfo.getWifiSubmask())!;
-    final deviceIpBin = _addressToBin(deviceIp);
-    final subnetBin = _addressToBin(subnet);
+    final deviceIpBin = _addressToBin(await deviceIp);
+    final subnetBin = _addressToBin(await subnetMask);
     final addressBin = _multiple(deviceIpBin, subnetBin);
     return addressBin;
   }

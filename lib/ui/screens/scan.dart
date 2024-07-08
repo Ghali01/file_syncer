@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:files_syncer/dependcy_injection.dart';
 import 'package:files_syncer/logic/controllers/scan.dart';
 import 'package:files_syncer/logic/models/scan.dart';
 import 'package:files_syncer/ui/screens/transfare_client.dart';
@@ -16,7 +17,7 @@ class ScanPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ScanCubit(),
+      create: (context) => sl<ScanCubit>(),
       child: Scaffold(
         appBar: Platform.isWindows
             ? const PreferredSize(

@@ -6,9 +6,11 @@ import 'package:files_syncer/utils/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'dependcy_injection.dart' as di;
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  di.init();
   if (Platform.isWindows) {
     doWhenWindowReady(() {
       appWindow.title = 'File Syncer';
