@@ -1,34 +1,34 @@
-import 'package:files_syncer/logic/models/transfare_base.dart';
+import 'package:files_syncer/logic/states/transfare_base.dart';
 
-class TransferServerState extends TransferBaseState {
-  TransferServerState({
+class TransferClientState extends TransferBaseState {
+  TransferClientState({
     super.path,
     super.speed,
+    super.sending,
     super.speedPerSecond,
     super.connected,
-    super.sending,
     super.files = const [],
     super.totalLength,
     super.totalReceived = 0,
   });
 
-  TransferServerState copyWith({
+  TransferClientState copyWith({
     String? path,
-    List? files,
     bool? connected,
     bool? sending,
+    List? files,
     int? totalLength,
     int? speedPerSecond,
     int? speed,
     int? totalReceived,
   }) {
-    return TransferServerState(
+    return TransferClientState(
       path: path ?? this.path,
-      speed: speed ?? this.speed,
       files: files ?? this.files,
+      speed: speed ?? this.speed,
       totalLength: totalLength ?? this.totalLength,
-      totalReceived: totalReceived ?? this.totalReceived,
       sending: sending ?? this.sending,
+      totalReceived: totalReceived ?? this.totalReceived,
       speedPerSecond: speedPerSecond ?? this.speedPerSecond,
       connected: connected ?? this.connected,
     );

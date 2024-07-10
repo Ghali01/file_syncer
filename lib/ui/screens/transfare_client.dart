@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:files_syncer/logic/controllers/transfare_client.dart';
-import 'package:files_syncer/logic/models/transfare_client.dart';
+import 'package:files_syncer/logic/states/transfare_client.dart';
 import 'package:files_syncer/ui/widgets/file_item.dart';
 import 'package:files_syncer/ui/widgets/title_bar.dart';
 import 'package:files_syncer/ui/widgets/yes_no_dialog.dart';

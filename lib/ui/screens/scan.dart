@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:files_syncer/dependcy_injection.dart';
 import 'package:files_syncer/logic/controllers/scan.dart';
-import 'package:files_syncer/logic/models/scan.dart';
+import 'package:files_syncer/logic/states/scan.dart';
 import 'package:files_syncer/ui/screens/transfare_client.dart';
 import 'package:files_syncer/ui/widgets/title_bar.dart';
 import 'package:files_syncer/utils/colors.dart';

@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 
-import 'package:files_syncer/logic/models/scan.dart';
+import 'package:files_syncer/logic/states/scan.dart';
 import 'package:files_syncer/logic/repositories/tcp_clients.dart';
 
 class ScanCubit extends Cubit<ScanState> {

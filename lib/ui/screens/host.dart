@@ -1,7 +1,8 @@
 import 'dart:io';
 
+import 'package:files_syncer/dependcy_injection.dart';
 import 'package:files_syncer/logic/controllers/host.dart';
-import 'package:files_syncer/logic/models/host.dart';
+import 'package:files_syncer/logic/states/host.dart';
 import 'package:files_syncer/network/tcp/server.dart';
 import 'package:files_syncer/ui/screens/transfare_server.dart';
 import 'package:files_syncer/ui/widgets/title_bar.dart';
@@ -17,7 +18,7 @@ class HostPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       lazy: false,
-      create: (context) => HostBloc(),
+      create: (context) => sl<HostBloc>(),
       child: Scaffold(
         appBar: Platform.isWindows
             ? const PreferredSize(

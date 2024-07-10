@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:files_syncer/logic/controllers/transfare_server.dart';
-import 'package:files_syncer/logic/models/transfare_server.dart';
+import 'package:files_syncer/logic/states/transfare_server.dart';
 import 'package:files_syncer/ui/widgets/file_item.dart';
 import 'package:files_syncer/ui/widgets/title_bar.dart';
 import 'package:files_syncer/ui/widgets/yes_no_dialog.dart';
@@ -73,9 +73,7 @@ class TransferServerPage extends StatelessWidget {
                     return ElevatedButton(
                       child: const Text('Browse'),
                       onPressed: () {
-                        context
-                            .read<TransferServerBloc>()
-                            .add(SelectDirectoryClicked());
+                        context.read<TransferServerBloc>().selectDirectory();
                       },
                     );
                   }),

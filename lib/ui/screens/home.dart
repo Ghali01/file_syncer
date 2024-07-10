@@ -3,8 +3,6 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 
 import 'package:files_syncer/network/ftp/server.dart';
-import 'package:files_syncer/network/tcp/scanner.dart';
-import 'package:files_syncer/network/tcp/server.dart';
 import 'package:files_syncer/ui/widgets/perm_dialog.dart';
 import 'package:files_syncer/ui/widgets/title_bar.dart';
 
@@ -12,7 +10,6 @@ import 'package:files_syncer/utils/routes.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:network_info_plus/network_info_plus.dart';
 
 import 'package:optimization_battery/optimization_battery.dart';
 import 'package:permission_handler/permission_handler.dart';

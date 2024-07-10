@@ -1,13 +1,12 @@
 import 'package:bloc/bloc.dart';
 
-import 'package:files_syncer/logic/models/host.dart';
+import 'package:files_syncer/logic/states/host.dart';
 import 'package:files_syncer/network/tcp/server.dart';
 import 'package:files_syncer/network/tcp/server_listener.dart';
 
 class HostBloc extends Cubit<HostState> implements IServerListener {
-  late AppServer server;
-  HostBloc() : super(HostState()) {
-    server = AppServer();
+  final AppServer server;
+  HostBloc(this.server) : super(HostState()) {
     server.listener = this;
   }
 

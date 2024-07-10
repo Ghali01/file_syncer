@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:files_syncer/logic/controllers/transfare_client.dart';
+import 'package:files_syncer/network/tcp/client_listener.dart';
 import 'package:files_syncer/network/tcp/server.dart';
 import 'package:files_syncer/network/tcp/utils.dart';
 import 'package:files_syncer/utils/functions.dart';
@@ -14,7 +14,7 @@ class ClientConnectionClient {
   //the device name
   late String name;
   String address;
-  TransferClientBloc? bloc;
+  IClientListener? listener;
   StreamSubscription? _subscription;
   ClientConnectionClient({
     required this.address,
@@ -94,18 +94,24 @@ class ClientConnectionClient {
       }
     }, onDone: () {
       // socket disconnected
-      bloc?.add(ServerDisconnected());
+      listener?.onServerDisconnected();
     });
   }
 
   void onDirectorySelected(List<int> encodedMsg) {
     String json = utf8.decode(encodedMsg.sublist(1));
     Map data = jsonDecode(json);
-    bloc?.add(DirectorySelected(data: data));
+    listener?.onDirectorySelected(data);
   }
 
   void sendTransferData(List data) {
     String json = jsonEncode(data);
+    List encodedMsg = utf8.encode(json);
+    _socket.add([OPCodes.TransferData, ...encodedMsg, 0, 0, 0]);
+  }
+
+  void sendTaskCompleted(int port) {
+    String json = jsonEncode({'port': port});
     List encodedMsg = utf8.encode(json);
     _socket.add([OPCodes.TransferData, ...encodedMsg, 0, 0, 0]);
   }

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:files_syncer/logic/controllers/transfare_server.dart';
+import 'package:files_syncer/network/tcp/client_server_listener.dart';
 import 'package:files_syncer/network/tcp/server_listener.dart';
 import 'package:files_syncer/network/tcp/utils.dart';
 import 'package:files_syncer/utils/functions.dart';
@@ -64,7 +64,7 @@ class AppServer {
 class ClientConnectionServer {
   Socket socket;
   Stream<Uint8List> output;
-  TransferServerBloc? bloc;
+  IClientServerListener? listener;
   String name;
   StreamSubscription? _subscription;
   ClientConnectionServer(
@@ -121,23 +121,32 @@ class ClientConnectionServer {
         if (msg.first == OPCodes.ProgressChange) {
           _onProgressChangeReceived(msg);
         }
+        if (msg.first == OPCodes.TaskCompleted) {
+          _onTaskCompletedReceived(msg);
+        }
         index = _checkOnSuffix(buffer);
       }
     }, onDone: () {
-      bloc?.add(ClientDisconnected());
+      listener?.onDisconnected();
     });
   }
 
   void _onTransferDataReceived(List<int> encodedMsg) {
     String json = utf8.decode(encodedMsg.sublist(1));
     List data = jsonDecode(json);
-    bloc?.add(TransferData(files: data));
+    listener?.onReceiveTransferData(data);
   }
 
   void _onProgressChangeReceived(List<int> encodedMsg) {
     String json = utf8.decode(encodedMsg.sublist(1));
     Map data = jsonDecode(json);
-    bloc?.add(ProgressChange(data: data));
+    listener?.onProgressChanged(data);
+  }
+
+  void _onTaskCompletedReceived(List<int> encodedMsg) {
+    String json = utf8.decode(encodedMsg.sublist(1));
+    Map data = jsonDecode(json);
+    listener?.onTaskCompleted(data['port']);
   }
 
   Future<void> close() async {

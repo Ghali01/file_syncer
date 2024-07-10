@@ -36,7 +36,7 @@ class FileItem extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('${data.progress}%'),
+                      Text('${data.progress.toStringAsFixed(2)}%'),
                       Text(data.size.toString()),
                     ],
                   ),
