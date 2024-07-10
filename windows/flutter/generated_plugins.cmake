@@ -4,6 +4,8 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   bitsdojo_window_windows
+  downloadsfolder
+  drag_and_drop_windows
   permission_handler_windows
   python_channel
   windows_taskbar

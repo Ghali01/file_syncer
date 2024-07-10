@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:math';
+import 'package:downloadsfolder/downloadsfolder.dart';
 import 'package:files_syncer/network/tcp/client_listener.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:bloc/bloc.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:files_syncer/logic/models/transfer_task.dart';
@@ -63,7 +63,7 @@ class TransferClientBloc extends Cubit<TransferClientState>
   Future<void> _getFiles(TransferTask task) async {
     final client = FtpClient(
       socketInitOptions: FtpSocketInitOptions(
-        host: '192.168.1.7',
+        host: connection.address,
         port: task.ftpPort,
       ),
       authOptions: const FtpAuthOptions(
@@ -81,8 +81,12 @@ class TransferClientBloc extends Cubit<TransferClientState>
       final remoteFile = client.getFile(path);
       final totalSize = await remoteFile.size();
       int received = 0;
-      final file = File(
-          (task.path ?? (await getDownloadsDirectory())!.absolute.path) + path);
+      File file;
+      if (task.path != null) {
+        file = File(task.path! + path);
+      } else {
+        file = await _getDownloadFile(path);
+      }
       final fi = file.openWrite();
 
       await for (final chunk in client.fs.downloadFileStream(remoteFile)) {
@@ -99,6 +103,21 @@ class TransferClientBloc extends Cubit<TransferClientState>
       final nextTask = transferTasks.removeLast();
       _getFiles(nextTask);
     }
+  }
+
+  Future<File> _getDownloadFile(String name) async {
+    var file = File('${(await getDownloadDirectory()).absolute.path}/$name');
+    int i = 1;
+    String newName = '';
+    final l = name.split('.');
+    while (file.existsSync()) {
+      newName = '${l[0]} - $i.${l[1]}';
+
+      file = file =
+          File('${(await getDownloadDirectory()).absolute.path}/$newName');
+      i++;
+    }
+    return file;
   }
 
   int _calcLength(List<Map> files) {
@@ -207,5 +226,37 @@ class TransferClientBloc extends Cubit<TransferClientState>
         totalReceived: totalReceived.toInt(),
         sending: sending,
         speed: speed.toInt()));
+  }
+
+  @override
+  void onShareFile(Map data) async {
+    bool prmStatus = await AppPermissions()
+        .checkStoragePerm(); //check on storage permissions
+
+    if (prmStatus) {
+      final FileModel fileModel = FileModel(
+          path: data['name'],
+          length: data['length'],
+          progress: 0,
+          totalReceived: 0);
+      emit(
+        state.copyWith(
+          files: [
+            ...state.files,
+            fileModel,
+          ],
+          totalLength: (state.totalLength ?? 0) + fileModel.length,
+        ),
+      );
+      final task = TransferTask(ftpPort: data['port'], files: [fileModel]);
+      if (!state.sending) {
+        // start file downloading
+        _getFiles(task).then((value) => null);
+        _displayProgress();
+        emit(state.copyWith(sending: true));
+      } else {
+        transferTasks.insert(0, task);
+      }
+    }
   }
 }

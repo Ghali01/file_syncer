@@ -129,6 +129,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
+  dartx:
+    dependency: transitive
+    description:
+      name: dartx
+      sha256: "8b25435617027257d43e6508b5fe061012880ddfdaa75a71d607c3de2a13d244"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.0"
   dbus:
     dependency: transitive
     description:
@@ -153,6 +161,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.0.0"
+  diacritic:
+    dependency: transitive
+    description:
+      name: diacritic
+      sha256: "96db5db6149cbe4aa3cfcbfd170aca9b7648639be7e48025f9d458517f807fe4"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.5"
+  downloadsfolder:
+    dependency: "direct main"
+    description:
+      name: downloadsfolder
+      sha256: e9987e56b998e3788047f977d31a1b50b4af58c388aefc3d157b9ac5c5d786a2
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
+  drag_and_drop_windows:
+    dependency: "direct main"
+    description:
+      name: drag_and_drop_windows
+      sha256: bfeb04182ba9c0cd83955953a3e5eaa03ea146614cbfac4434cbcb0d99285ec1
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.3"
   fake_async:
     dependency: transitive
     description:
@@ -409,7 +441,7 @@ packages:
     source: hosted
     version: "1.9.0"
   path_provider:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: path_provider
       sha256: c9e7d3a4cd1410877472158bee69963a4579f78b68c65a2b7d40d1a7a88bb161
@@ -629,6 +661,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.0"
+  time:
+    dependency: transitive
+    description:
+      name: time
+      sha256: ad8e018a6c9db36cb917a031853a1aae49467a93e0d464683e029537d848c221
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.4"
   timezone:
     dependency: transitive
     description:

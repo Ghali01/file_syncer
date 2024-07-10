@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:downloadsfolder/downloadsfolder.dart';
 
 import 'package:files_syncer/network/ftp/server.dart';
 import 'package:files_syncer/ui/widgets/perm_dialog.dart';
@@ -39,7 +40,7 @@ class _HomePageState extends State<HomePage> {
         return;
       } else {
         bool? ok = await showDialog(
-            context: context,
+            context: this.context,
             builder: (_) => const PermissionDialog(
                 title: 'Disable Battery Optimization ',
                 text:
@@ -88,7 +89,7 @@ class _HomePageState extends State<HomePage> {
     var status = await Permission.manageExternalStorage.isGranted;
     if (!status) {
       bool? ok = await showDialog(
-          context: context,
+          context: this.context,
           builder: (_) => const PermissionDialog(
               title: 'Manage All Files',
               text: 'The app need to have Manage All Files permission.'));
@@ -148,7 +149,10 @@ class _HomePageState extends State<HomePage> {
                 child: Padding(
                   padding: const EdgeInsets.only(top: 16),
                   child: ElevatedButton(
-                      onPressed: () async {}, child: const Text('test')),
+                      onPressed: () async {
+                        print((await getDownloadDirectory()).absolute.path);
+                      },
+                      child: const Text('test')),
                 ),
               ),
             ],

@@ -3,4 +3,7 @@ abstract class IClientListener {
   void onDirectorySelected(Map data);
   // on server disconnected
   void onServerDisconnected();
+
+  //on share file is received
+  void onShareFile(Map data);
 }

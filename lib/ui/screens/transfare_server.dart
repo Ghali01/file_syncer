@@ -70,11 +70,26 @@ class TransferServerPage extends StatelessWidget {
                     height: 8,
                   ),
                   Builder(builder: (context) {
-                    return ElevatedButton(
-                      child: const Text('Browse'),
-                      onPressed: () {
-                        context.read<TransferServerBloc>().selectDirectory();
-                      },
+                    return Row(
+                      children: [
+                        ElevatedButton(
+                          child: const Text('Sync Folder'),
+                          onPressed: () {
+                            context
+                                .read<TransferServerBloc>()
+                                .selectDirectory();
+                          },
+                        ),
+                        const SizedBox(
+                          width: 16,
+                        ),
+                        ElevatedButton(
+                          child: const Text('Share File'),
+                          onPressed: () {
+                            context.read<TransferServerBloc>().selectFiles();
+                          },
+                        ),
+                      ],
                     );
                   }),
                   BlocSelector<TransferServerBloc, TransferServerState,

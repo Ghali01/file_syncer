@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
 import 'package:bloc/bloc.dart';
+import 'package:drag_and_drop_windows/drag_and_drop_windows.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:files_syncer/logic/models/file_model.dart';
 import 'package:files_syncer/network/tcp/client_server_listener.dart';
@@ -24,8 +26,12 @@ class TransferServerBloc extends Cubit<TransferServerState>
   bool connected =
       true; // this bool will assigned to false on disconnect to remove the notification
 
+  late StreamSubscription drogStraem;
   TransferServerBloc(this.connection) : super(TransferServerState()) {
     connection.listener = this;
+    drogStraem = dropEventStream.listen(
+      (event) => _shareFile(event.first),
+    );
   }
 
   //calculate the total of files size of a list
@@ -87,7 +93,7 @@ class TransferServerBloc extends Cubit<TransferServerState>
   @override
   Future<void> close() async {
     connected = false;
-
+    drogStraem.cancel();
     for (var server in ftpServers.values) {
       await server.stop();
     }
@@ -190,5 +196,32 @@ class TransferServerBloc extends Cubit<TransferServerState>
   @override
   void onTaskCompleted(int port) async {
     await ftpServers[port]?.stop();
+  }
+
+  void selectFiles() async {
+    final res = await FilePicker.platform.pickFiles(allowMultiple: false);
+    if (res != null && res.count > 0) {
+      _shareFile(res.files.first.path!);
+    }
+  }
+
+  void _shareFile(String path) async {
+    final file = File(path);
+    final size = file.lengthSync();
+    final name = path.split(RegExp(r'\\|/')).last;
+    final port = await _runFtpServer(file.parent.path);
+    print(name);
+    final FileModel fileModel =
+        FileModel(path: name, length: size, progress: 0, totalReceived: 0);
+    emit(
+      state.copyWith(
+        files: [
+          ...state.files,
+          fileModel,
+        ],
+        totalLength: (state.totalLength ?? 0) + fileModel.length,
+      ),
+    );
+    connection.sendFileShare({'name': name, 'length': size, 'port': port});
   }
 }

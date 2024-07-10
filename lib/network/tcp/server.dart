@@ -86,6 +86,12 @@ class ClientConnectionServer {
     socket.add([OPCodes.DirectorySelected, ...encodedMsg, 0, 0, 0]);
   }
 
+  void sendFileShare(Map data) {
+    String json = jsonEncode(data);
+    List encodedMsg = utf8.encode(json);
+    socket.add([OPCodes.FileShare, ...encodedMsg, 0, 0, 0]);
+  }
+
 //a method checks if there is a complete message in the buffer
 //and return the index of the end of that message
   int? _checkOnSuffix(List buffer) {

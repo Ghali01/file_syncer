@@ -6,4 +6,5 @@ class OPCodes {
   static const int TransferData = 5;
   static const int ProgressChange = 6;
   static const int TaskCompleted = 7;
+  static const int FileShare = 8;
 }

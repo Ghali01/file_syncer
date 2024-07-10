@@ -75,7 +75,7 @@ class ClientConnectionClient {
 
   Future<void> _listenToEvents() async {
     List<int> buffer = [];
-    print('zzzz');
+
     _subscription = output.listen((event) {
       //add the bytes to the buffer
       buffer.addAll(event);
@@ -87,8 +87,10 @@ class ClientConnectionClient {
         buffer.removeRange(0, index + 3);
 
         if (msg.first == OPCodes.DirectorySelected) {
-          print('dir sel');
-          onDirectorySelected(msg);
+          _onDirectorySelected(msg);
+        }
+        if (msg.first == OPCodes.FileShare) {
+          _onShareFile(msg);
         }
         index = _checkOnSuffix(buffer);
       }
@@ -98,10 +100,16 @@ class ClientConnectionClient {
     });
   }
 
-  void onDirectorySelected(List<int> encodedMsg) {
+  void _onDirectorySelected(List<int> encodedMsg) {
     String json = utf8.decode(encodedMsg.sublist(1));
     Map data = jsonDecode(json);
     listener?.onDirectorySelected(data);
+  }
+
+  void _onShareFile(List<int> encodedMsg) {
+    String json = utf8.decode(encodedMsg.sublist(1));
+    Map data = jsonDecode(json);
+    listener?.onShareFile(data);
   }
 
   void sendTransferData(List data) {
