@@ -61,7 +61,7 @@ class TransferClientBloc extends Cubit<TransferClientState>
 // download the files
   ///[rootPath] is the selected dir from the receiver and here used to refer to the files
   Future<void> _getFiles(TransferTask task) async {
-    final client = FtpClient(
+    FtpClient client = FtpClient(
       socketInitOptions: FtpSocketInitOptions(
         host: connection.address,
         port: task.ftpPort,
@@ -75,9 +75,13 @@ class TransferClientBloc extends Cubit<TransferClientState>
     await client.connect();
 
     print('connected');
-    for (String path in task.files.map(
-      (e) => e.path,
-    )) {
+    final paths = task.files
+        .map(
+          (e) => e.path,
+        )
+        .toList();
+    for (int i = 0; i < paths.length;) {
+      String path = paths[i];
       final remoteFile = client.getFile(path);
       final totalSize = await remoteFile.size();
       int received = 0;
@@ -87,15 +91,23 @@ class TransferClientBloc extends Cubit<TransferClientState>
       } else {
         file = await _getDownloadFile(path);
       }
-      final fi = file.openWrite();
+      try {
+        final fi = file.openWrite();
 
-      await for (final chunk in client.fs.downloadFileStream(remoteFile)) {
-        received += chunk.length;
-        fi.add(chunk);
-        _updateProgress(received / totalSize * 100, received);
+        await for (final chunk in client.fs.downloadFileStream(remoteFile)) {
+          received += chunk.length;
+          fi.add(chunk);
+          _updateProgress(received / totalSize * 100, received);
+        }
+        fi.close();
+      } catch (_) {
+        print('download retried');
+        client = client.clone();
+        await client.connect();
+        continue;
       }
-      fi.close();
       currentIndex++;
+      i++;
     }
 
     await client.disconnect();
