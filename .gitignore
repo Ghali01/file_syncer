@@ -47,3 +47,5 @@ python/dist/
 python/build/
 
 setup/Output
+
+installers/build/

@@ -8,7 +8,6 @@ import 'package:files_syncer/ui/widgets/perm_dialog.dart';
 import 'package:files_syncer/ui/widgets/title_bar.dart';
 
 import 'package:files_syncer/utils/routes.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
@@ -145,7 +144,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               Visibility(
-                visible: kDebugMode,
+                visible: false,
                 child: Padding(
                   padding: const EdgeInsets.only(top: 16),
                   child: ElevatedButton(
